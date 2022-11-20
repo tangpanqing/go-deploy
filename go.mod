@@ -1,4 +1,4 @@
-module github.com/tangpanqing/go-deploy
+module github.com/tangpanqing/godeploy
 
 go 1.18
 

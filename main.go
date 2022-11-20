@@ -1,4 +1,4 @@
-package gdeploy
+package godeploy
 
 import (
 	"fmt"
