@@ -1,4 +1,4 @@
-package go_deploy
+package gdeploy
 
 import (
 	"fmt"
@@ -10,14 +10,11 @@ import (
 	"os/exec"
 	"path"
 	"strings"
-	"time"
 )
 
-func PrintNow() {
-	fmt.Println(time.Now())
-}
-
-func DeployForUbuntu(username string, password string, serverIp string, serverPort string, fileName string, remotePath string, runPort string, runProfile string) {
+//runParam just like "-port=3000 -profile=dev >/dev/null 2>&1"
+//full cmd is: nohup fileName -port=3000 -profile=dev >/dev/null 2>&1 &
+func DeployForUbuntu(username string, password string, serverIp string, serverPort string, fileName string, remotePath string, runParam string) {
 	//生成文件
 	genLocalFile(fileName)
 
@@ -48,7 +45,7 @@ func DeployForUbuntu(username string, password string, serverIp string, serverPo
 	}
 
 	//启动远程服务器上的项目
-	runCommand(client, "cd "+remotePath+"; nohup ./"+fileName+" -port="+runPort+" -profile="+runProfile+" >/dev/null 2>&1 &")
+	runCommand(client, "cd "+remotePath+"; nohup ./"+fileName+" "+runParam+" &")
 
 	//删除本地文件
 	delLocalFile(fileName)
