@@ -123,12 +123,14 @@ func uploadFile(client *ssh.Client, fileNamePath string, remotePath string) {
 	//上传到远端服务器的文件名,与本地路径末尾相同
 	var remoteFileName = path.Base(fileNamePath)
 
-	fmt.Println("正上传文件 " + path.Join(remotePath, remoteFileName) + " 请稍后...")
+	var allFileName = path.Join(remotePath, remoteFileName)
+	allFileName = strings.ReplaceAll(allFileName, "\\", "/")
+	fmt.Println("正上传文件 " + allFileName + " 请稍后...")
 
 	//打开远程文件,如果不存在就创建一个
-	dstFile, err := sftpClient.Create(path.Join(remotePath, remoteFileName))
+	dstFile, err := sftpClient.Create(allFileName)
 	if err != nil {
-		fmt.Println("sftpClient.Create error : ", path.Join(remotePath, remoteFileName))
+		fmt.Println("sftpClient.Create error : ", allFileName)
 		fmt.Println("-------上传错误----")
 		fmt.Println(err)
 		log.Fatal(err)
@@ -143,7 +145,7 @@ func uploadFile(client *ssh.Client, fileNamePath string, remotePath string) {
 	}
 	dstFile.Write(ff)
 
-	fmt.Println("已上传文件 " + path.Join(remotePath, remoteFileName))
+	fmt.Println("已上传文件 " + allFileName)
 }
 func uploadFileNew(client *ssh.Client, fileNamePath string, remotePath string) {
 	sftpClient, _ := sftp.NewClient(client)
@@ -164,19 +166,25 @@ func uploadFileNew(client *ssh.Client, fileNamePath string, remotePath string) {
 	pathArr := strings.Split(remoteFileName, "/")
 	if len(pathArr) > 1 {
 		for i := 0; i < len(pathArr)-1; i++ {
+			ss := path.Join(remotePath, pathArr[i])
+			ss = strings.ReplaceAll(ss, "\\", "/")
+
 			runCommand(client, strings.Join([]string{
-				"sudo mkdir " + path.Join(remotePath, pathArr[i]),
-				"sudo chmod 777 " + path.Join(remotePath, pathArr[i]),
+				"sudo mkdir " + ss,
+				"sudo chmod 777 " + ss,
 			}, " ; "))
 		}
 	}
 
 	//fmt.Println("正上传文件 " + path.Join(remotePath, remoteFileName) + " 请稍后...")
 
+	allFileName := path.Join(remotePath, remoteFileName)
+	allFileName = strings.ReplaceAll(allFileName, "\\", "/")
+
 	//打开远程文件,如果不存在就创建一个
-	dstFile, err := sftpClient.Create(path.Join(remotePath, remoteFileName))
+	dstFile, err := sftpClient.Create(allFileName)
 	if err != nil {
-		fmt.Println("sftpClient.Create error : ", path.Join(remotePath, remoteFileName))
+		fmt.Println("sftpClient.Create error : ", allFileName)
 		fmt.Println("-------上传错误----")
 		fmt.Println(err)
 		log.Fatal(err)
@@ -191,7 +199,7 @@ func uploadFileNew(client *ssh.Client, fileNamePath string, remotePath string) {
 	}
 	dstFile.Write(ff)
 
-	fmt.Println("已上传文件 " + path.Join(remotePath, remoteFileName))
+	fmt.Println("已上传文件 " + allFileName)
 }
 
 //获取指定目录下的所有文件,包含子目录下的文件
