@@ -1,33 +1,20 @@
 package godeploy
 
 import (
+	"github.com/tangpanqing/godeploy/stucts"
 	"github.com/tangpanqing/godeploy/tools"
 )
 
-type ServerInfo struct {
-	Username   string
-	Password   string
-	ServerIp   string
-	ServerPort string
-}
-
-type AppInfo struct {
-	FileName   string
-	RemotePath string
-	RunParam   string
-	DirList    []string
-}
-
-func DeployForUbuntu(serverInfo ServerInfo, appInfo AppInfo) {
+func DeployForUbuntu(serverInfo stucts.ServerInfo, appInfo stucts.AppInfo) {
 	Deploy(serverInfo, appInfo, "sudo ")
 }
 
-func DeployForCentOS(serverInfo ServerInfo, appInfo AppInfo) {
+func DeployForCentOS(serverInfo stucts.ServerInfo, appInfo stucts.AppInfo) {
 	Deploy(serverInfo, appInfo, "")
 }
 
 // Deploy runParam just like "-port=3000 -profile=dev >/dev/null 2>&1" , full cmd is: nohup fileName -port=3000 -profile=dev >/dev/null 2>&1 &
-func Deploy(serverInfo ServerInfo, appInfo AppInfo, sudoStr string) {
+func Deploy(serverInfo stucts.ServerInfo, appInfo stucts.AppInfo, sudoStr string) {
 	if appInfo.RemotePath == "" {
 		panic("远程路径不能为空")
 	}
