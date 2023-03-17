@@ -1,4 +1,4 @@
-package stucts
+package structs
 
 type ServerInfo struct {
 	Username   string

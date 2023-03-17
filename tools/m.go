@@ -3,7 +3,7 @@ package tools
 import (
 	"fmt"
 	"github.com/pkg/sftp"
-	"github.com/tangpanqing/godeploy/stucts"
+	"github.com/tangpanqing/godeploy/structs"
 	"golang.org/x/crypto/ssh"
 	"io/ioutil"
 	"log"
@@ -31,7 +31,7 @@ func ConnectServer(username string, password string, serverIp string, serverPort
 	return client
 }
 
-func RebuildDir(client *ssh.Client, appInfo stucts.AppInfo, sudoStr string) {
+func RebuildDir(client *ssh.Client, appInfo structs.AppInfo, sudoStr string) {
 	runCommand(client, strings.Join([]string{
 		sudoStr + "rm -rf " + appInfo.RemotePath,
 		sudoStr + "mkdir " + appInfo.RemotePath,
@@ -41,7 +41,7 @@ func RebuildDir(client *ssh.Client, appInfo stucts.AppInfo, sudoStr string) {
 	fmt.Println("已重建目录 " + appInfo.RemotePath)
 }
 
-func UploadFiles(client *ssh.Client, appInfo stucts.AppInfo, sudoStr string) {
+func UploadFiles(client *ssh.Client, appInfo structs.AppInfo, sudoStr string) {
 	//本地所有文件，包含主文件，以及配置文件，模板文件，静态文件等等
 	allFiles := getAllFiles(appInfo.FileName, appInfo.DirList)
 	for i := 0; i < len(allFiles); i++ {
@@ -54,7 +54,7 @@ func UploadFiles(client *ssh.Client, appInfo stucts.AppInfo, sudoStr string) {
 	//fmt.Println("已上传文件")
 }
 
-func RestartApp(client *ssh.Client, appInfo stucts.AppInfo, sudoStr string) {
+func RestartApp(client *ssh.Client, appInfo structs.AppInfo, sudoStr string) {
 	pid := getAppPid(client, appInfo)
 	if pid != "" {
 		runCommand(client, sudoStr+"kill -9 "+pid)
@@ -73,7 +73,7 @@ func DelLocalFile(fileName string) {
 	fmt.Println("已删除文件 " + fileName)
 }
 
-func GetAppInfo(client *ssh.Client, appInfo stucts.AppInfo) {
+func GetAppInfo(client *ssh.Client, appInfo structs.AppInfo) {
 	pid := getAppPid(client, appInfo)
 	if pid == "" {
 		fmt.Println("部署失败 ")
@@ -187,7 +187,7 @@ func uploadFile(client *ssh.Client, fileNamePath string, remotePath string, sudo
 	fmt.Println("已上传文件 " + allFileName)
 }
 
-func getAppPid(client *ssh.Client, appInfo stucts.AppInfo) string {
+func getAppPid(client *ssh.Client, appInfo structs.AppInfo) string {
 	res2 := runCommand(client, "ps -ef | grep \""+appInfo.FileName+"\" | grep -v \"grep\"")
 	if res2 != "" {
 		arr := strings.Fields(res2)
